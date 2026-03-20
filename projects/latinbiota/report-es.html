@@ -2421,13 +2421,51 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 gap: 1.6rem;
 margin-top: 1.35rem;
 }
+.support-balance-grid {
+display: grid;
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: 1rem;
+margin-top: 1rem;
+}
+.support-balance-card {
+background: rgba(255,255,255,0.78);
+border: 1px solid var(--line);
+border-radius: 24px;
+padding: 1rem 1rem 0.85rem;
+}
+.support-balance-card h3 {
+margin-top: 0;
+margin-bottom: 0.35rem;
+font-size: 1.02rem;
+}
+.support-balance-card p {
+margin-top: 0;
+margin-bottom: 0.8rem;
+color: var(--muted);
+font-size: 0.94rem;
+}
+.support-balance-plot {
+width: 100%;
+height: 360px;
+}
+.support-balance-note {
+margin-top: 0.35rem;
+margin-bottom: 0.25rem;
+color: var(--muted);
+font-size: 0.96rem;
+line-height: 1.65;
+}
+.legacy-support-maps {
+display: none;
+}
 .metric-grid,
 .icon-grid,
 .infographic-strip,
 .two-up,
 .three-up,
 .conclusion-grid,
-.map-card-grid {
+.map-card-grid,
+.support-balance-grid {
 width: min(100%, 1140px);
 margin-left: auto;
 margin-right: auto;
@@ -2492,6 +2530,7 @@ box-shadow: none;
 .two-up,
 .conclusion-grid,
 .map-card-grid,
+.support-balance-grid,
 .three-up {
 grid-template-columns: 1fr;
 }
@@ -2661,8 +2700,31 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
 </div>
 <div class="panel" style="margin-top: 1rem;">
 <h3 style="margin-top: 0; margin-bottom: 0.45rem;">Dónde aparece en la red el apoyo equivalente</h3>
-<p style="margin-top: 0; margin-bottom: 0.25rem; color: #5c6773;">Cada tarjeta muestra los países de los encuestados que reportaron poder ofrecer la contribución que corresponde a un apoyo solicitado.</p>
-<div class="map-card-grid">
+<p style="margin-top: 0; margin-bottom: 0.25rem; color: #5c6773;">Cada punto representa un país. El eje X muestra cuántos encuestados en ese país reportan poder ofrecer el apoyo, mientras que el eje Y usa como proxy de necesidad el número total de encuestados en ese país.</p>
+<p class="support-balance-note">La línea diagonal marca equilibrio entre necesidad aproximada y capacidad de apoyo. El color distingue la región del país.</p>
+<div class="support-balance-grid">
+<div class="support-balance-card">
+<h3>Acceso a análisis bioinformático</h3>
+<p>Comparación entre capacidad declarada de apoyo y necesidad aproximada por país.</p>
+<div id="support-balance-bioinfo" class="support-balance-plot"></div>
+</div>
+<div class="support-balance-card">
+<h3>Entrenamiento técnico</h3>
+<p>Comparación entre oferta local reportada y tamaño aproximado de la demanda nacional.</p>
+<div id="support-balance-training" class="support-balance-plot"></div>
+</div>
+<div class="support-balance-card">
+<h3>Acceso a muestras</h3>
+<p>Relación entre capacidad de contribuir con muestras y necesidad aproximada en cada país.</p>
+<div id="support-balance-samples" class="support-balance-plot"></div>
+</div>
+<div class="support-balance-card">
+<h3>Tutoría histórica, filosófica y ética</h3>
+<p>Brecha entre necesidad aproximada y disponibilidad declarada de apoyo equivalente.</p>
+<div id="support-balance-ethics" class="support-balance-plot"></div>
+</div>
+</div>
+<div class="map-card-grid legacy-support-maps">
 <div class="panel">
 <h3 style="margin-top: 0; margin-bottom: 0.35rem;">Acceso a análisis bioinformático</h3>
 <p style="margin-top: 0; margin-bottom: 0.85rem; color: #5c6773;">Contribución equivalente: Análisis bioinformático</p>
@@ -2929,6 +2991,227 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
       barChartIds.forEach(function (id) {
         withPlotlyChart(id, sortHorizontalBar);
       });
+    });
+  })();
+</script>
+
+<script>
+  (function () {
+    var regionByCode = {
+      ARG: "América Latina",
+      BOL: "América Latina",
+      BRA: "América Latina",
+      CHL: "América Latina",
+      COL: "América Latina",
+      CRI: "América Latina",
+      ECU: "América Latina",
+      MEX: "América Latina",
+      PRY: "América Latina",
+      PER: "América Latina",
+      URY: "América Latina",
+      VEN: "América Latina",
+      CUB: "Caribe",
+      PRI: "Caribe",
+      USA: "Norteamérica",
+      BEL: "Europa",
+      IRL: "Europa",
+      NLD: "Europa"
+    };
+
+    var regionColors = {
+      "América Latina": "#0f6c78",
+      "Caribe": "#b95d41",
+      "Norteamérica": "#cf9918",
+      "Europa": "#6f587d"
+    };
+
+    var supportBalanceData = {
+      "support-balance-bioinfo": [
+        {"code":"ARG","country":"Argentina","need":5,"support":5},
+        {"code":"BOL","country":"Bolivia","need":1,"support":1},
+        {"code":"BRA","country":"Brasil","need":1,"support":0},
+        {"code":"BEL","country":"Bélgica","need":1,"support":1},
+        {"code":"CHL","country":"Chile","need":2,"support":1},
+        {"code":"COL","country":"Colombia","need":5,"support":2},
+        {"code":"CRI","country":"Costa Rica","need":1,"support":1},
+        {"code":"CUB","country":"Cuba","need":1,"support":0},
+        {"code":"ECU","country":"Ecuador","need":2,"support":1},
+        {"code":"USA","country":"Estados Unidos","need":2,"support":1},
+        {"code":"IRL","country":"Irlanda","need":1,"support":1},
+        {"code":"MEX","country":"México","need":3,"support":1},
+        {"code":"PRY","country":"Paraguay","need":1,"support":1},
+        {"code":"NLD","country":"Países Bajos","need":1,"support":0},
+        {"code":"PER","country":"Perú","need":1,"support":0},
+        {"code":"PRI","country":"Puerto Rico","need":1,"support":1},
+        {"code":"URY","country":"Uruguay","need":2,"support":1},
+        {"code":"VEN","country":"Venezuela","need":1,"support":1}
+      ],
+      "support-balance-training": [
+        {"code":"ARG","country":"Argentina","need":5,"support":3},
+        {"code":"BOL","country":"Bolivia","need":1,"support":0},
+        {"code":"BRA","country":"Brasil","need":1,"support":1},
+        {"code":"BEL","country":"Bélgica","need":1,"support":1},
+        {"code":"CHL","country":"Chile","need":2,"support":2},
+        {"code":"COL","country":"Colombia","need":5,"support":3},
+        {"code":"CRI","country":"Costa Rica","need":1,"support":1},
+        {"code":"CUB","country":"Cuba","need":1,"support":0},
+        {"code":"ECU","country":"Ecuador","need":2,"support":2},
+        {"code":"USA","country":"Estados Unidos","need":2,"support":2},
+        {"code":"IRL","country":"Irlanda","need":1,"support":1},
+        {"code":"MEX","country":"México","need":3,"support":2},
+        {"code":"PRY","country":"Paraguay","need":1,"support":1},
+        {"code":"NLD","country":"Países Bajos","need":1,"support":0},
+        {"code":"PER","country":"Perú","need":1,"support":0},
+        {"code":"PRI","country":"Puerto Rico","need":1,"support":1},
+        {"code":"URY","country":"Uruguay","need":2,"support":1},
+        {"code":"VEN","country":"Venezuela","need":1,"support":1}
+      ],
+      "support-balance-samples": [
+        {"code":"ARG","country":"Argentina","need":5,"support":3},
+        {"code":"BOL","country":"Bolivia","need":1,"support":1},
+        {"code":"BRA","country":"Brasil","need":1,"support":1},
+        {"code":"BEL","country":"Bélgica","need":1,"support":1},
+        {"code":"CHL","country":"Chile","need":2,"support":2},
+        {"code":"COL","country":"Colombia","need":5,"support":4},
+        {"code":"CRI","country":"Costa Rica","need":1,"support":0},
+        {"code":"CUB","country":"Cuba","need":1,"support":1},
+        {"code":"ECU","country":"Ecuador","need":2,"support":2},
+        {"code":"USA","country":"Estados Unidos","need":2,"support":0},
+        {"code":"IRL","country":"Irlanda","need":1,"support":0},
+        {"code":"MEX","country":"México","need":3,"support":1},
+        {"code":"PRY","country":"Paraguay","need":1,"support":1},
+        {"code":"NLD","country":"Países Bajos","need":1,"support":0},
+        {"code":"PER","country":"Perú","need":1,"support":1},
+        {"code":"PRI","country":"Puerto Rico","need":1,"support":1},
+        {"code":"URY","country":"Uruguay","need":2,"support":1},
+        {"code":"VEN","country":"Venezuela","need":1,"support":1}
+      ],
+      "support-balance-ethics": [
+        {"code":"ARG","country":"Argentina","need":5,"support":0},
+        {"code":"BOL","country":"Bolivia","need":1,"support":0},
+        {"code":"BRA","country":"Brasil","need":1,"support":0},
+        {"code":"BEL","country":"Bélgica","need":1,"support":0},
+        {"code":"CHL","country":"Chile","need":2,"support":0},
+        {"code":"COL","country":"Colombia","need":5,"support":0},
+        {"code":"CRI","country":"Costa Rica","need":1,"support":0},
+        {"code":"CUB","country":"Cuba","need":1,"support":0},
+        {"code":"ECU","country":"Ecuador","need":2,"support":0},
+        {"code":"USA","country":"Estados Unidos","need":2,"support":0},
+        {"code":"IRL","country":"Irlanda","need":1,"support":0},
+        {"code":"MEX","country":"México","need":3,"support":0},
+        {"code":"PRY","country":"Paraguay","need":1,"support":0},
+        {"code":"NLD","country":"Países Bajos","need":1,"support":1},
+        {"code":"PER","country":"Perú","need":1,"support":0},
+        {"code":"PRI","country":"Puerto Rico","need":1,"support":0},
+        {"code":"URY","country":"Uruguay","need":2,"support":0},
+        {"code":"VEN","country":"Venezuela","need":1,"support":0}
+      ]
+    };
+
+    function renderSupportBalancePlot(containerId, showLegend) {
+      var container = document.getElementById(containerId);
+      if (!container || !window.Plotly) {
+        return;
+      }
+
+      var data = supportBalanceData[containerId].map(function (row) {
+        return Object.assign({}, row, {
+          region: regionByCode[row.code] || "Otra región"
+        });
+      });
+
+      var maxAxis = data.reduce(function (maxValue, row) {
+        return Math.max(maxValue, row.need, row.support);
+      }, 0) + 0.5;
+
+      var traces = [
+        {
+          x: [0, maxAxis],
+          y: [0, maxAxis],
+          mode: "lines",
+          line: {
+            color: "rgba(19,32,43,0.28)",
+            dash: "dash",
+            width: 1.5
+          },
+          hoverinfo: "skip",
+          showlegend: false
+        }
+      ];
+
+      Object.keys(regionColors).forEach(function (region) {
+        var points = data.filter(function (row) {
+          return row.region === region;
+        });
+
+        if (!points.length) {
+          return;
+        }
+
+        traces.push({
+          type: "scatter",
+          mode: "markers",
+          name: region,
+          showlegend: showLegend,
+          x: points.map(function (row) { return row.support; }),
+          y: points.map(function (row) { return row.need; }),
+          text: points.map(function (row) { return row.country; }),
+          customdata: points.map(function (row) { return [row.region, row.code]; }),
+          marker: {
+            size: 11,
+            color: regionColors[region],
+            line: {
+              color: "rgba(255,255,255,0.9)",
+              width: 1.2
+            }
+          },
+          hovertemplate: "<b>%{text}</b><br>Región: %{customdata[0]}<br>Apoyo ofrecido: %{x}<br>Necesidad aproximada: %{y}<extra></extra>"
+        });
+      });
+
+      window.Plotly.newPlot(container, traces, {
+        margin: { b: 52, l: 58, t: 6, r: 18 },
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)",
+        hovermode: "closest",
+        showlegend: showLegend,
+        legend: {
+          orientation: "h",
+          yanchor: "bottom",
+          y: 1.02,
+          xanchor: "left",
+          x: 0
+        },
+        xaxis: {
+          title: "Apoyo ofrecido en el país",
+          range: [0, maxAxis],
+          dtick: 1,
+          rangemode: "tozero",
+          gridcolor: "rgba(19,32,43,0.08)",
+          zeroline: false
+        },
+        yaxis: {
+          title: "Necesidad aproximada en el país",
+          range: [0, maxAxis],
+          dtick: 1,
+          rangemode: "tozero",
+          gridcolor: "rgba(19,32,43,0.08)",
+          zeroline: false,
+          scaleanchor: "x",
+          scaleratio: 1
+        }
+      }, {
+        responsive: true,
+        displaylogo: false,
+        modeBarButtonsToAdd: ["hoverclosest", "hovercompare"]
+      });
+    }
+
+    window.addEventListener("load", function () {
+      renderSupportBalancePlot("support-balance-bioinfo", true);
+      renderSupportBalancePlot("support-balance-training", false);
+      renderSupportBalancePlot("support-balance-samples", false);
+      renderSupportBalancePlot("support-balance-ethics", false);
     });
   })();
 </script>
