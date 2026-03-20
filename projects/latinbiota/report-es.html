@@ -2814,27 +2814,27 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
 </div>
 <div class="panel" style="margin-top: 1rem;">
 <h3 style="margin-top: 0; margin-bottom: 0.45rem;">Dónde aparece en la red el apoyo equivalente</h3>
-<p style="margin-top: 0; margin-bottom: 0.25rem; color: #5c6773;">Cada punto representa un país. El eje X muestra cuántos encuestados en ese país reportan poder ofrecer el apoyo, mientras que el eje Y usa como proxy de necesidad el número total de encuestados en ese país.</p>
+<p style="margin-top: 0; margin-bottom: 0.25rem; color: #5c6773;">Cada punto representa un país. El eje X muestra cuántos países de América Latina reportan poder ofrecer el apoyo correspondiente, mientras que el eje Y usa como proxy de necesidad el número total de encuestados en ese país.</p>
 <p class="support-balance-note">La línea diagonal marca equilibrio entre necesidad aproximada y capacidad de apoyo. El color distingue la región del país.</p>
 <div class="support-balance-grid">
 <div class="support-balance-card">
 <h3>Acceso a análisis bioinformático</h3>
-<p>Comparación entre capacidad declarada de apoyo y necesidad aproximada por país.</p>
+<p>Comparación entre la necesidad aproximada por país y la oferta regional disponible en América Latina para cada tipo de apoyo.</p>
 <div id="support-balance-bioinfo" class="support-balance-plot"></div>
 </div>
 <div class="support-balance-card">
 <h3>Entrenamiento técnico</h3>
-<p>Comparación entre oferta local reportada y tamaño aproximado de la demanda nacional.</p>
+<p>Comparación entre la necesidad aproximada por país y la oferta regional disponible en América Latina para cada tipo de apoyo.</p>
 <div id="support-balance-training" class="support-balance-plot"></div>
 </div>
 <div class="support-balance-card">
 <h3>Acceso a muestras</h3>
-<p>Relación entre capacidad de contribuir con muestras y necesidad aproximada en cada país.</p>
+<p>Comparación entre la necesidad aproximada por país y la oferta regional disponible en América Latina para cada tipo de apoyo.</p>
 <div id="support-balance-samples" class="support-balance-plot"></div>
 </div>
 <div class="support-balance-card">
 <h3>Tutoría histórica, filosófica y ética</h3>
-<p>Brecha entre necesidad aproximada y disponibilidad declarada de apoyo equivalente.</p>
+<p>Comparación entre la necesidad aproximada por país y la oferta regional disponible en América Latina para cada tipo de apoyo.</p>
 <div id="support-balance-ethics" class="support-balance-plot"></div>
 </div>
 </div>
@@ -3661,8 +3661,12 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
         });
       });
 
+      var latinAmericaOfferCount = data.filter(function (row) {
+        return row.region === "América Latina" && row.support > 0;
+      }).length;
+
       var maxAxis = data.reduce(function (maxValue, row) {
-        return Math.max(maxValue, row.need, row.support);
+        return Math.max(maxValue, row.need, latinAmericaOfferCount);
       }, 0) + 0.5;
 
       var traces = [
@@ -3694,7 +3698,7 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
           mode: "markers",
           name: region,
           showlegend: showLegend,
-          x: points.map(function (row) { return row.support; }),
+          x: points.map(function () { return latinAmericaOfferCount; }),
           y: points.map(function (row) { return row.need; }),
           text: points.map(function (row) { return row.country; }),
           customdata: points.map(function (row) { return [row.region, row.code]; }),
@@ -3706,7 +3710,7 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
               width: 1.2
             }
           },
-          hovertemplate: "<b>%{text}</b><br>Región: %{customdata[0]}<br>Apoyo ofrecido: %{x}<br>Necesidad aproximada: %{y}<extra></extra>"
+          hovertemplate: "<b>%{text}</b><br>Región: %{customdata[0]}<br>Países de América Latina con oferta: %{x}<br>Necesidad aproximada: %{y}<extra></extra>"
         });
       });
 
@@ -3724,7 +3728,7 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
           x: 0
         },
         xaxis: {
-          title: "Apoyo ofrecido en el país",
+          title: "Países de América Latina con oferta",
           range: [0, maxAxis],
           dtick: 1,
           rangemode: "tozero",
