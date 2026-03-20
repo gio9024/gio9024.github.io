@@ -2455,6 +2455,74 @@ color: var(--muted);
 font-size: 0.96rem;
 line-height: 1.65;
 }
+.support-route-panel {
+width: min(100%, 1140px);
+margin: 1rem auto 0;
+}
+.support-route-layout {
+display: grid;
+grid-template-columns: minmax(280px, 0.52fr) minmax(0, 1.48fr);
+gap: 1rem;
+align-items: stretch;
+}
+.support-route-controls {
+background: rgba(255,255,255,0.78);
+border: 1px solid var(--line);
+border-radius: 22px;
+padding: 1rem;
+display: grid;
+align-content: start;
+gap: 0.9rem;
+}
+.support-route-controls h3 {
+margin: 0;
+font-size: 1.05rem;
+}
+.support-route-controls p {
+margin: 0;
+color: var(--muted);
+font-size: 0.95rem;
+line-height: 1.6;
+}
+.support-filter {
+display: grid;
+gap: 0.35rem;
+}
+.support-filter label {
+font-family: 'Avenir Next', 'Segoe UI', sans-serif;
+text-transform: uppercase;
+letter-spacing: 0.08em;
+font-size: 0.72rem;
+color: var(--muted);
+}
+.support-filter select {
+width: 100%;
+padding: 0.8rem 0.9rem;
+border-radius: 14px;
+border: 1px solid rgba(19, 32, 43, 0.12);
+background: rgba(255,255,255,0.92);
+color: var(--ink);
+font: inherit;
+}
+.support-route-summary {
+padding: 0.95rem 1rem;
+border-radius: 16px;
+background: rgba(15,108,120,0.08);
+border: 1px solid rgba(15,108,120,0.12);
+color: var(--ink);
+line-height: 1.6;
+}
+.support-route-map-shell {
+background: rgba(255,255,255,0.78);
+border: 1px solid var(--line);
+border-radius: 22px;
+padding: 0.8rem;
+overflow: hidden;
+}
+.support-route-map {
+width: 100%;
+height: 470px;
+}
 .legacy-support-maps {
 display: none;
 }
@@ -2465,7 +2533,8 @@ display: none;
 .three-up,
 .conclusion-grid,
 .map-card-grid,
-.support-balance-grid {
+.support-balance-grid,
+.support-route-panel {
 width: min(100%, 1140px);
 margin-left: auto;
 margin-right: auto;
@@ -2557,6 +2626,7 @@ box-shadow: none;
 .map-card-grid,
 .geo-layout,
 .support-balance-grid,
+.support-route-layout,
 .three-up {
 grid-template-columns: 1fr;
 }
@@ -2752,6 +2822,26 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
 <h3>Tutoría histórica, filosófica y ética</h3>
 <p>Brecha entre necesidad aproximada y disponibilidad declarada de apoyo equivalente.</p>
 <div id="support-balance-ethics" class="support-balance-plot"></div>
+</div>
+</div>
+</div>
+<div class="panel support-route-panel">
+<div class="support-route-layout">
+<div class="support-route-controls">
+<h3>Centro de apoyo más cercano</h3>
+<p>Selecciona un país de América Latina y una necesidad. El mapa incluye todos los países del filtro regional, usa la capital del país elegido como punto de referencia e incorpora todas las coordenadas institucionales reportadas por los participantes.</p>
+<div class="support-filter">
+<label for="support-country-filter">País</label>
+<select id="support-country-filter"></select>
+</div>
+<div class="support-filter">
+<label for="support-need-filter">Necesidad</label>
+<select id="support-need-filter"></select>
+</div>
+<div id="support-route-summary" class="support-route-summary"></div>
+</div>
+<div class="support-route-map-shell">
+<div id="support-route-map" class="support-route-map"></div>
 </div>
 </div>
 <div class="map-card-grid legacy-support-maps">
@@ -3050,6 +3140,331 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
 
 <script>
   (function () {
+    var latinAmericaCountries = [
+      { code: "ARG", name: "Argentina", lat: -34.6037, lon: -58.3816 },
+      { code: "BLZ", name: "Belice", lat: 17.2510, lon: -88.7590 },
+      { code: "BOL", name: "Bolivia", lat: -16.4897, lon: -68.1193 },
+      { code: "BRA", name: "Brasil", lat: -15.7939, lon: -47.8828 },
+      { code: "CHL", name: "Chile", lat: -33.4489, lon: -70.6693 },
+      { code: "COL", name: "Colombia", lat: 4.7110, lon: -74.0721 },
+      { code: "CRI", name: "Costa Rica", lat: 9.9281, lon: -84.0907 },
+      { code: "CUB", name: "Cuba", lat: 23.1136, lon: -82.3666 },
+      { code: "DOM", name: "República Dominicana", lat: 18.4861, lon: -69.9312 },
+      { code: "ECU", name: "Ecuador", lat: -0.1807, lon: -78.4678 },
+      { code: "SLV", name: "El Salvador", lat: 13.6929, lon: -89.2182 },
+      { code: "GTM", name: "Guatemala", lat: 14.6349, lon: -90.5069 },
+      { code: "GUY", name: "Guyana", lat: 6.8013, lon: -58.1551 },
+      { code: "HTI", name: "Haití", lat: 18.5944, lon: -72.3074 },
+      { code: "HND", name: "Honduras", lat: 14.0723, lon: -87.1921 },
+      { code: "MEX", name: "México", lat: 19.4326, lon: -99.1332 },
+      { code: "NIC", name: "Nicaragua", lat: 12.1150, lon: -86.2362 },
+      { code: "PAN", name: "Panamá", lat: 8.9824, lon: -79.5199 },
+      { code: "PRY", name: "Paraguay", lat: -25.2637, lon: -57.5759 },
+      { code: "PER", name: "Perú", lat: -12.0464, lon: -77.0428 },
+      { code: "PRI", name: "Puerto Rico", lat: 18.4655, lon: -66.1057 },
+      { code: "SUR", name: "Surinam", lat: 5.8520, lon: -55.2038 },
+      { code: "URY", name: "Uruguay", lat: -34.9011, lon: -56.1645 },
+      { code: "VEN", name: "Venezuela", lat: 10.4806, lon: -66.9036 }
+    ];
+
+    var supportNeeds = [
+      {
+        key: "Acceso a análisis bioinformático",
+        countries: ["ARG", "BOL", "BEL", "CHL", "COL", "CRI", "ECU", "USA", "IRL", "MEX", "PRY", "PRI", "URY", "VEN"]
+      },
+      {
+        key: "Entrenamiento técnico",
+        countries: ["ARG", "BRA", "BEL", "CHL", "COL", "CRI", "ECU", "USA", "IRL", "MEX", "PRY", "PRI", "URY", "VEN"]
+      },
+      {
+        key: "Acceso a muestras",
+        countries: ["ARG", "BOL", "BRA", "BEL", "CHL", "COL", "CUB", "ECU", "MEX", "PRY", "PER", "PRI", "URY", "VEN"]
+      },
+      {
+        key: "Tutoría histórica, filosófica y ética",
+        countries: ["NLD"]
+      }
+    ];
+
+    var countryNameToCode = {
+      "Argentina": "ARG",
+      "Belice": "BLZ",
+      "Bolivia": "BOL",
+      "Brasil": "BRA",
+      "Bélgica": "BEL",
+      "Chile": "CHL",
+      "Colombia": "COL",
+      "Costa Rica": "CRI",
+      "Cuba": "CUB",
+      "Ecuador": "ECU",
+      "Estados Unidos": "USA",
+      "Guyana": "GUY",
+      "Haití": "HTI",
+      "Irlanda": "IRL",
+      "México": "MEX",
+      "Países Bajos": "NLD",
+      "Paraguay": "PRY",
+      "Perú": "PER",
+      "Puerto Rico": "PRI",
+      "Surinam": "SUR",
+      "Uruguay": "URY",
+      "Venezuela": "VEN"
+    };
+
+    function stripHtml(value) {
+      return String(value || "")
+        .replace(/<br\s*\/?>/gi, " | ")
+        .replace(/<[^>]+>/g, "")
+        .trim();
+    }
+
+    function extractParticipantCenters() {
+      var sourceChart = document.getElementById("htmlwidget-116bf566eaae00938cff");
+      if (!sourceChart || !sourceChart.data || !sourceChart.data[0]) {
+        return [];
+      }
+
+      var trace = sourceChart.data[0];
+      var centers = [];
+
+      trace.lat.forEach(function (latValue, index) {
+        var lonValue = trace.lon[index];
+        if (latValue === null || lonValue === null) {
+          return;
+        }
+
+        var rawText = trace.text[index] || "";
+        var countryMatch = /País:\s*([^<]+)/.exec(rawText);
+        var countryName = countryMatch ? countryMatch[1].trim() : "";
+
+        centers.push({
+          lat: latValue,
+          lon: lonValue,
+          countryName: countryName,
+          countryCode: countryNameToCode[countryName] || "",
+          label: stripHtml(rawText)
+        });
+      });
+
+      return centers;
+    }
+
+    function haversineKm(lat1, lon1, lat2, lon2) {
+      var R = 6371;
+      var toRad = function (value) { return value * Math.PI / 180; };
+      var dLat = toRad(lat2 - lat1);
+      var dLon = toRad(lon2 - lon1);
+      var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    }
+
+    function buildSupportRouteMap() {
+      var countrySelect = document.getElementById("support-country-filter");
+      var needSelect = document.getElementById("support-need-filter");
+      var summary = document.getElementById("support-route-summary");
+      var mapContainer = document.getElementById("support-route-map");
+
+      if (!countrySelect || !needSelect || !summary || !mapContainer || !window.Plotly) {
+        return;
+      }
+
+      if (!countrySelect.options.length) {
+        latinAmericaCountries.forEach(function (country) {
+          var option = document.createElement("option");
+          option.value = country.code;
+          option.textContent = country.name;
+          countrySelect.appendChild(option);
+        });
+        countrySelect.value = "COL";
+      }
+
+      if (!needSelect.options.length) {
+        supportNeeds.forEach(function (need) {
+          var option = document.createElement("option");
+          option.value = need.key;
+          option.textContent = need.key;
+          needSelect.appendChild(option);
+        });
+      }
+
+      var centers = extractParticipantCenters();
+      if (!centers.length) {
+        window.setTimeout(buildSupportRouteMap, 250);
+        return;
+      }
+
+      var selectedCountry = latinAmericaCountries.find(function (country) {
+        return country.code === countrySelect.value;
+      }) || latinAmericaCountries[0];
+
+      var selectedNeed = supportNeeds.find(function (need) {
+        return need.key === needSelect.value;
+      }) || supportNeeds[0];
+
+      var eligibleCenters = centers.filter(function (center) {
+        return selectedNeed.countries.indexOf(center.countryCode) !== -1;
+      });
+
+      var nearestCenter = null;
+      eligibleCenters.forEach(function (center) {
+        var distance = haversineKm(selectedCountry.lat, selectedCountry.lon, center.lat, center.lon);
+        if (!nearestCenter || distance < nearestCenter.distanceKm) {
+          nearestCenter = Object.assign({}, center, { distanceKm: distance });
+        }
+      });
+
+      if (nearestCenter) {
+        summary.innerHTML = "<strong>" + selectedCountry.name + "</strong> -> para <strong>" + selectedNeed.key + "</strong>, el centro elegible más cercano es <strong>" + nearestCenter.label.split(' | ')[0] + "</strong> (" + nearestCenter.countryName + "), a aproximadamente <strong>" + Math.round(nearestCenter.distanceKm) + " km</strong>.";
+      } else {
+        summary.textContent = "No se identificaron centros elegibles con coordenadas disponibles para la necesidad seleccionada.";
+      }
+
+      var traces = [
+        {
+          type: "scattergeo",
+          mode: "markers",
+          name: "Países en el filtro",
+          lat: latinAmericaCountries.map(function (country) { return country.lat; }),
+          lon: latinAmericaCountries.map(function (country) { return country.lon; }),
+          text: latinAmericaCountries.map(function (country) { return country.name; }),
+          marker: {
+            size: 5,
+            color: "rgba(19,32,43,0.12)",
+            line: { color: "rgba(255,255,255,0.6)", width: 0.8 }
+          },
+          hovertemplate: "<b>%{text}</b><br>País disponible en el filtro<extra></extra>",
+          showlegend: true
+        },
+        {
+          type: "scattergeo",
+          mode: "markers",
+          name: "Participantes",
+          lat: centers.map(function (center) { return center.lat; }),
+          lon: centers.map(function (center) { return center.lon; }),
+          text: centers.map(function (center) { return center.label; }),
+          marker: {
+            size: 7,
+            color: "rgba(19,32,43,0.18)",
+            line: { color: "rgba(19,32,43,0.18)", width: 0.5 }
+          },
+          hovertemplate: "%{text}<extra></extra>",
+          showlegend: true
+        },
+        {
+          type: "scattergeo",
+          mode: "markers",
+          name: "Centros elegibles",
+          lat: eligibleCenters.map(function (center) { return center.lat; }),
+          lon: eligibleCenters.map(function (center) { return center.lon; }),
+          text: eligibleCenters.map(function (center) { return center.label; }),
+          marker: {
+            size: 10,
+            color: "#0f6c78",
+            line: { color: "white", width: 1.1 }
+          },
+          hovertemplate: "%{text}<extra></extra>",
+          showlegend: true
+        },
+        {
+          type: "scattergeo",
+          mode: "markers",
+          name: "País seleccionado",
+          lat: [selectedCountry.lat],
+          lon: [selectedCountry.lon],
+          text: [selectedCountry.name],
+          marker: {
+            size: 15,
+            color: "#cf9918",
+            symbol: "star",
+            line: { color: "white", width: 1.2 }
+          },
+          hovertemplate: "<b>%{text}</b><br>País seleccionado<extra></extra>",
+          showlegend: true
+        }
+      ];
+
+      if (nearestCenter) {
+        traces.push({
+          type: "scattergeo",
+          mode: "lines",
+          name: "Ruta sugerida",
+          lat: [selectedCountry.lat, nearestCenter.lat],
+          lon: [selectedCountry.lon, nearestCenter.lon],
+          line: {
+            color: "rgba(185,93,65,0.8)",
+            width: 2.2,
+            dash: "dot"
+          },
+          hoverinfo: "skip",
+          showlegend: true
+        });
+        traces.push({
+          type: "scattergeo",
+          mode: "markers",
+          name: "Centro más cercano",
+          lat: [nearestCenter.lat],
+          lon: [nearestCenter.lon],
+          text: [nearestCenter.label],
+          marker: {
+            size: 15,
+            color: "#b95d41",
+            line: { color: "white", width: 1.2 }
+          },
+          hovertemplate: "%{text}<extra></extra>",
+          showlegend: true
+        });
+      }
+
+      window.Plotly.react(mapContainer, traces, {
+        margin: { b: 0, l: 0, t: 0, r: 0 },
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)",
+        legend: {
+          orientation: "h",
+          yanchor: "bottom",
+          y: 1.02,
+          xanchor: "left",
+          x: 0
+        },
+        geo: {
+          projection: {
+            type: "natural earth",
+            scale: 1.56
+          },
+          center: {
+            lon: -68,
+            lat: -11
+          },
+          lonaxis: {
+            range: [-118, 14]
+          },
+          lataxis: {
+            range: [-58, 34]
+          },
+          showland: true,
+          landcolor: "#eef1ec",
+          showocean: true,
+          oceancolor: "#dbe8ee",
+          showlakes: true,
+          lakecolor: "#dbe8ee",
+          showcoastlines: true,
+          coastlinecolor: "rgba(120,140,150,0.55)",
+          coastlinewidth: 0.5,
+          showcountries: true,
+          countrycolor: "rgba(255,255,255,0.95)",
+          countrywidth: 0.7,
+          bgcolor: "rgba(0,0,0,0)"
+        }
+      }, {
+        responsive: true,
+        displaylogo: false,
+        modeBarButtonsToAdd: ["hoverclosest", "hovercompare"]
+      });
+    }
+
     function optimizeGeoMap() {
       var chart = document.getElementById("htmlwidget-116bf566eaae00938cff");
       if (!chart || !window.Plotly || !chart.layout) {
@@ -3296,6 +3711,9 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
       renderSupportBalancePlot("support-balance-training", false);
       renderSupportBalancePlot("support-balance-samples", false);
       renderSupportBalancePlot("support-balance-ethics", false);
+      buildSupportRouteMap();
+      document.getElementById("support-country-filter").addEventListener("change", buildSupportRouteMap);
+      document.getElementById("support-need-filter").addEventListener("change", buildSupportRouteMap);
     });
   })();
 </script>
