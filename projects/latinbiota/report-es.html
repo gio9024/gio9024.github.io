@@ -2382,7 +2382,7 @@ line-height: 1.5;
 }
 .two-up {
 display: grid;
-grid-template-columns: 1.2fr 0.8fr;
+grid-template-columns: repeat(2, minmax(0, 1fr));
 gap: 1.2rem;
 }
 .three-up {
@@ -2486,6 +2486,31 @@ margin-right: auto;
 padding-left: 2rem;
 padding-right: 2rem;
 }
+.geo-layout {
+display: grid;
+grid-template-columns: minmax(300px, 0.72fr) minmax(0, 1.28fr);
+gap: 1.4rem;
+align-items: stretch;
+width: min(100%, 1380px);
+margin: 0 auto 1.5rem;
+}
+.geo-layout .section-shell,
+.geo-layout .map-panel {
+width: 100%;
+margin: 0;
+}
+.geo-layout .section-shell {
+display: flex;
+flex-direction: column;
+justify-content: center;
+padding: 1.8rem 2rem;
+}
+.geo-layout .map-panel {
+padding: 0.8rem 1rem;
+}
+.profile-status-grid .panel {
+margin-bottom: 0;
+}
 .quote-card {
 border-radius: 24px;
 padding: 1.15rem 1.2rem;
@@ -2530,6 +2555,7 @@ box-shadow: none;
 .two-up,
 .conclusion-grid,
 .map-card-grid,
+.geo-layout,
 .support-balance-grid,
 .three-up {
 grid-template-columns: 1fr;
@@ -2554,6 +2580,9 @@ padding: 1.1rem;
 .map-panel {
 padding-left: 1rem;
 padding-right: 1rem;
+}
+.geo-layout .section-shell {
+padding: 1.2rem;
 }
 }
 </style>
@@ -2611,15 +2640,16 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
 </div>
 </div>
 <div class="section">
+<div class="geo-layout">
 <div class="section-shell">
 <div class="section-kicker">Sección 2</div>
 <h2>Huella geográfica</h2>
 <p class="lead">Este mapa ubica a los encuestados en localizaciones aproximadas a nivel de ciudad institucional y muestra las instituciones representadas en la encuesta, con espacio para explorar cada punto con mayor claridad.</p>
 </div>
-</div>
 <div class="panel map-panel">
 <div class="plotly html-widget html-fill-item" id="htmlwidget-116bf566eaae00938cff" style="width:100%;height:400px;"></div>
 <script type="application/json" data-for="htmlwidget-116bf566eaae00938cff">{"x":{"visdat":{"13a5944598014":["function () ","plotlyVisDat"]},"cur_data":"13a5944598014","attrs":{"13a5944598014":{"mode":"markers","lat":{},"lon":{},"text":{},"marker":{"size":{},"color":"#0f6c78","opacity":0.81999999999999995,"line":{"color":"white","width":1.2}},"hovertemplate":"%{text}<extra><\/extra>","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scattergeo"}},"layout":{"height":520,"margin":{"b":10,"l":10,"t":10,"r":10},"paper_bgcolor":"rgba(0,0,0,0)","plot_bgcolor":"rgba(0,0,0,0)","geo":{"projection":{"type":"natural earth"},"scope":"world","showframe":false,"showland":true,"landcolor":"#eef1ec","showocean":true,"oceancolor":"#dbe8ee","showlakes":true,"lakecolor":"#dbe8ee","showcoastlines":true,"coastlinecolor":"rgba(120,140,150,0.55)","coastlinewidth":0.5,"showcountries":true,"countrycolor":"rgba(255,255,255,0.95)","countrywidth":0.69999999999999996,"bgcolor":"rgba(0,0,0,0)"},"hovermode":"closest","showlegend":false},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"mode":"markers","lat":[-34.603700000000003,-34.603700000000003,-34.625799999999998,-34.4572,-34.570300000000003,-16.489699999999999,-27.594899999999999,50.879800000000003,-33.448900000000002,-33.448900000000002,3.4516,4.7110000000000003,4.8609,7.1193,9.9281000000000006,null,-0.1807,-0.1807,40.486199999999997,32.880099999999999,51.898499999999999,19.432600000000001,19.427299999999999,19.432600000000001,-25.2637,52.090699999999998,-12.0464,18.398499999999999,-34.9011,10.480600000000001],"lon":[-58.381599999999999,-58.381599999999999,-58.393000000000001,-58.899999999999999,-59.104999999999997,-68.119299999999996,-48.548000000000002,4.7004999999999999,-70.669300000000007,-70.669300000000007,-76.531999999999996,-74.072100000000006,-74.032600000000002,-73.122699999999995,-84.090699999999998,null,-78.467799999999997,-78.467799999999997,-74.451800000000006,-117.23399999999999,-8.4756,-99.133200000000002,-99.127600000000001,-99.133200000000002,-57.575899999999997,5.1214000000000004,-77.0428,-66.085999999999999,-56.164499999999997,-66.903599999999997],"text":["<b>FFYB-UBA (Buenos Aires)<\/b><br>País: Argentina<br>Encuestados en esta institución: 1","<b>Facultad de Ciencias Exactas y Naturales, Universidad de Buenos Aires (Buenos Aires)<\/b><br>País: Argentina<br>Encuestados en esta institución: 1","<b>Hospital de Pediatría Garrahan (Buenos Aires)<\/b><br>País: Argentina<br>Encuestados en esta institución: 1","<b>Instituto de Investigaciones en Medicina Traslacional (https://www.austral.edu.ar/cienciasbiomedicas/instituto-de-investigacion-en-medicina-traslacional/) (Pilar)<\/b><br>País: Argentina<br>Encuestados en esta institución: 1","<b>Universidad Nacional de Luján (Lujan)<\/b><br>País: Argentina<br>Encuestados en esta institución: 1","<b>Universidad Mayor de San Andres (La Paz)<\/b><br>País: Bolivia<br>Encuestados en esta institución: 1","<b>Universidade Federal de Santa Catarina (Florianopolis)<\/b><br>País: Brasil<br>Encuestados en esta institución: 1","<b>KU Leuven (Leuven)<\/b><br>País: Bélgica<br>Encuestados en esta institución: 1","<b>Universidad Andres Bello (Santiago)<\/b><br>País: Chile<br>Encuestados en esta institución: 1","<b>Universidad de Chile (Santiago)<\/b><br>País: Chile<br>Encuestados en esta institución: 1","<b>CIDEIM (Cali)<\/b><br>País: Colombia<br>Encuestados en esta institución: 1","<b>Universidad Nacional de Colombia (Bogota)<\/b><br>País: Colombia<br>Encuestados en esta institución: 1","<b>Universidad de La Sabana (Chia)<\/b><br>País: Colombia<br>Encuestados en esta institución: 2","<b>Universidad de Santander (Bucaramanga)<\/b><br>País: Colombia<br>Encuestados en esta institución: 1","<b>Universidad de Costa Rica (San Jose)<\/b><br>País: Costa Rica<br>Encuestados en esta institución: 1","<b>Hospital Cínico Quirúrgico Hermanos Ameijeiras (Cuba)<\/b><br>País: Cuba<br>Encuestados en esta institución: 1","<b>USFQ (Quito)<\/b><br>País: Ecuador<br>Encuestados en esta institución: 1","<b>Universidad Internacional del Ecuador; Hospital Metropolitano de Quito (Quito)<\/b><br>País: Ecuador<br>Encuestados en esta institución: 1","<b>Rutgers University (New Brunswick)<\/b><br>País: Estados Unidos<br>Encuestados en esta institución: 1","<b>UC San Diego (San Diego)<\/b><br>País: Estados Unidos<br>Encuestados en esta institución: 1","<b>APC Microbiome Ireland (Cork)<\/b><br>País: Irlanda<br>Encuestados en esta institución: 1","<b>UNAM (Mexico City)<\/b><br>País: México<br>Encuestados en esta institución: 1","<b>UNAM/INMEGEN (Mexico City)<\/b><br>País: México<br>Encuestados en esta institución: 1","<b>illumina LATAM (Mexico City)<\/b><br>País: México<br>Encuestados en esta institución: 1","<b>Universidad Nacional de Asunción (Asuncion)<\/b><br>País: Paraguay<br>Encuestados en esta institución: 1","<b>Utrecht University (Utrecht)<\/b><br>País: Países Bajos<br>Encuestados en esta institución: 1","<b>Instituto de Investigacion en Ciencias Biomedicas (Lima)<\/b><br>País: Perú<br>Encuestados en esta institución: 1","<b>University of Puerto Rico, Medical Sciences Campus (San Juan)<\/b><br>País: Puerto Rico<br>Encuestados en esta institución: 1","<b>Institut Pasteur Montevideo (Montevideo)<\/b><br>País: Uruguay<br>Encuestados en esta institución: 2","<b>Instituto Venezolano de Investigaciones Cientificas (IVIC) (Caracas)<\/b><br>País: Venezuela<br>Encuestados en esta institución: 1"],"marker":{"color":"#0f6c78","size":[12,12,12,12,12,12,12,12,12,12,12,12,16,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,16,12],"opacity":0.81999999999999995,"line":{"color":"white","width":1.2}},"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"type":"scattergeo","line":{"color":"rgba(31,119,180,1)"},"frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
 </div>
 <div class="section">
 <div class="section-shell">
@@ -2628,7 +2658,7 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
 <p class="lead">El grupo encuestado se inclina hacia perfiles senior y altamente involucrados en trabajo de microbioma, pero también incluye investigadores en etapas tempranas y una proporción importante de experiencia comunitaria en terreno.</p>
 </div>
 </div>
-<div class="three-up">
+<div class="three-up profile-status-grid">
 <div class="panel" style="margin-top: 1rem;">
 <h3 style="margin-top: 0; margin-bottom: 0.75rem; font-size: 1.05rem;">Con publicaciones en microbioma</h3>
 <div class="plotly html-widget html-fill-item" id="htmlwidget-573c2489eafe0b7f4c8b" style="width:100%;height:400px;"></div>
@@ -2892,6 +2922,15 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
         return b.x - a.x;
       });
 
+      var longestLabel = rows.reduce(function (maxValue, row) {
+        var plain = String(row.y)
+          .replace(/<br\s*\/?>/gi, " ")
+          .replace(/<[^>]+>/g, "");
+        return Math.max(maxValue, plain.length);
+      }, 0);
+
+      var computedLeftMargin = Math.min(420, Math.max(150, longestLabel * 7));
+
       var nextTrace = Object.assign({}, trace, {
         x: rows.map(function (row) { return row.x; }),
         y: rows.map(function (row) { return row.y; }),
@@ -2901,10 +2940,25 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
       });
 
       var nextLayout = Object.assign({}, chart.layout, {
+        margin: Object.assign({}, chart.layout.margin || {}, {
+          l: computedLeftMargin,
+          r: 28,
+          b: 56,
+          t: 10
+        }),
+        font: Object.assign({}, chart.layout.font || {}, {
+          size: 12
+        }),
+        xaxis: Object.assign({}, chart.layout.xaxis || {}, {
+          tickangle: 0,
+          automargin: true,
+          title: (chart.layout.xaxis && chart.layout.xaxis.title) || "Menciones"
+        }),
         yaxis: Object.assign({}, chart.layout.yaxis || {}, {
           categoryorder: "array",
           categoryarray: rows.map(function (row) { return row.y; }),
-          autorange: "reversed"
+          autorange: "reversed",
+          automargin: true
         })
       });
 
@@ -2952,23 +3006,22 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
           hovertemplate: rows.map(function () {
             return "<b>%{y}</b><br>%{x} encuestados (%{customdata:.1%})<extra></extra>";
           }),
-          text: rows.map(function (row) { return String(row.value); }),
-          textposition: "outside",
-          cliponaxis: false,
           showlegend: false
         };
 
         var nextLayout = Object.assign({}, chart.layout, {
-          height: 300,
-          margin: { b: 40, l: 130, t: 10, r: 30 },
+          height: 240,
+          margin: { b: 42, l: 150, t: 10, r: 18 },
           paper_bgcolor: "rgba(0,0,0,0)",
           plot_bgcolor: "rgba(0,0,0,0)",
+          font: { size: 12 },
           xaxis: {
             title: "Encuestados",
             automargin: true,
             gridcolor: "rgba(19,32,43,0.08)",
             zeroline: false,
-            rangemode: "tozero"
+            rangemode: "tozero",
+            tickangle: 0
           },
           yaxis: {
             automargin: true,
@@ -2997,6 +3050,36 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
 
 <script>
   (function () {
+    function optimizeGeoMap() {
+      var chart = document.getElementById("htmlwidget-116bf566eaae00938cff");
+      if (!chart || !window.Plotly || !chart.layout) {
+        window.setTimeout(optimizeGeoMap, 250);
+        return;
+      }
+
+      window.Plotly.relayout(chart, {
+        height: 470,
+        margin: { b: 0, l: 0, t: 0, r: 0 },
+        geo: Object.assign({}, chart.layout.geo || {}, {
+          scope: "world",
+          projection: {
+            type: "natural earth",
+            scale: 1.7
+          },
+          center: {
+            lon: -72,
+            lat: -8
+          },
+          lonaxis: {
+            range: [-122, -28]
+          },
+          lataxis: {
+            range: [-58, 38]
+          }
+        })
+      });
+    }
+
     var regionByCode = {
       ARG: "América Latina",
       BOL: "América Latina",
@@ -3208,6 +3291,7 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
     }
 
     window.addEventListener("load", function () {
+      optimizeGeoMap();
       renderSupportBalancePlot("support-balance-bioinfo", true);
       renderSupportBalancePlot("support-balance-training", false);
       renderSupportBalancePlot("support-balance-samples", false);
