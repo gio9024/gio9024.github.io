@@ -2032,9 +2032,10 @@ radial-gradient(circle at 50% 85%, rgba(79,122,40,0.10), transparent 22%),
 linear-gradient(180deg, #fbf7f1 0%, #f3ede3 100%);
 }
 .main-container {
-max-width: 1360px;
-padding-left: 30px;
-padding-right: 30px;
+max-width: 1320px;
+padding-left: 44px;
+padding-right: 44px;
+margin: 0 auto;
 }
 h1.title {
 display: none;
@@ -2135,7 +2136,7 @@ backdrop-filter: blur(16px);
 border: 1px solid rgba(255,255,255,0.55);
 border-radius: 30px;
 box-shadow: var(--shadow);
-padding: 1.6rem;
+padding: 1.75rem 1.9rem;
 }
 .section-kicker {
 font-family: 'Avenir Next', 'Segoe UI', sans-serif;
@@ -2419,6 +2420,17 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 gap: 1.6rem;
 margin-top: 1.35rem;
 }
+.metric-grid,
+.icon-grid,
+.infographic-strip,
+.two-up,
+.three-up,
+.conclusion-grid,
+.map-card-grid {
+width: min(100%, 1140px);
+margin-left: auto;
+margin-right: auto;
+}
 .panel {
 background: rgba(255,255,255,0.72);
 border: 1px solid var(--line);
@@ -2480,6 +2492,10 @@ font-size: 3rem;
 }
 .hero-content {
 padding: 2.2rem 1.5rem;
+}
+.main-container {
+padding-left: 20px;
+padding-right: 20px;
 }
 .section-shell {
 padding: 1.1rem;
