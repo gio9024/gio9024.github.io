@@ -2835,11 +2835,6 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
 <p>Comparación entre la necesidad aproximada por país y la oferta regional disponible en América Latina para cada tipo de apoyo.</p>
 <div id="support-balance-samples" class="support-balance-plot"></div>
 </div>
-<div class="support-balance-card">
-<h3>Tutoría histórica, filosófica y ética</h3>
-<p>Comparación entre la necesidad aproximada por país y la oferta regional disponible en América Latina para cada tipo de apoyo.</p>
-<div id="support-balance-ethics" class="support-balance-plot"></div>
-</div>
 </div>
 </div>
 <div class="panel support-route-panel">
@@ -3799,7 +3794,6 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
       renderSupportBalancePlot("support-balance-bioinfo", true);
       renderSupportBalancePlot("support-balance-training", false);
       renderSupportBalancePlot("support-balance-samples", false);
-      renderSupportBalancePlot("support-balance-ethics", false);
       buildSupportRouteMap();
       document.getElementById("support-country-filter").addEventListener("change", buildSupportRouteMap);
       document.getElementById("support-need-filter").addEventListener("change", buildSupportRouteMap);
