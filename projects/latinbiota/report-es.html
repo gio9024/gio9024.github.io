@@ -2680,8 +2680,8 @@ Esta página interactiva convierte las respuestas de la encuesta en una historia
 dónde están las necesidades más fuertes y qué tipo de infraestructura regional podría llegar a ser Latinbiota.
 </p>
 <div class="hero-meta">
-<div class="hero-chip"><strong>32</strong> respuestas</div>
-<div class="hero-chip"><strong>18</strong> países representados</div>
+<div class="hero-chip"><strong>31</strong> respuestas</div>
+<div class="hero-chip"><strong>17</strong> países representados</div>
 <div class="hero-chip"><strong>75%</strong> han publicado sobre microbioma</div>
 <div class="hero-chip"><strong>44%</strong> han trabajado con comunidades indígenas o rurales</div>
 </div>
@@ -2696,12 +2696,12 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
 <div class="metric-grid">
 <div class="metric-card teal">
 <div class="metric-label">Respuestas</div>
-<div class="metric-value">32</div>
+<div class="metric-value">31</div>
 <div class="metric-foot">Investigadores representados en esta encuesta</div>
 </div>
 <div class="metric-card rust">
 <div class="metric-label">Países</div>
-<div class="metric-value">18</div>
+<div class="metric-value">17</div>
 <div class="metric-foot">Países actuales de trabajo en el grupo encuestado</div>
 </div>
 <div class="metric-card olive">
@@ -2720,7 +2720,7 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
 <div class="metric-foot">Interés en ser miembros activos de Latinbiota</div>
 </div>
 </div>
-<p class="footnote">Los nombres y correos electrónicos se excluyen intencionalmente de todas las visualizaciones públicas.</p>
+<p class="footnote">Los nombres y correos electrónicos se excluyen intencionalmente de todas las visualizaciones públicas. Los totales geográficos y de apoyo en esta versión excluyen la respuesta de Países Bajos; para recalcular con precisión los indicadores no geográficos hace falta el archivo fuente de la encuesta.</p>
 </div>
 </div>
 <div class="section">
@@ -2941,7 +2941,7 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
 <div class="conclusion-grid">
 <div class="conclusion-card">
 <h3>1. La encuesta refleja un impulso regional real</h3>
-<p>El grupo encuestado incluye 32 investigadores que trabajan en 18 países, y los 32 encuestados señalaron que les interesaría unirse a Latinbiota como miembros activos.</p>
+<p>El grupo encuestado incluye 31 investigadores que trabajan en 17 países, y los 31 encuestados señalados en este recorte del reporte expresaron interés en unirse a Latinbiota como miembros activos.</p>
 <p class="mini">Esto sugiere que Latinbiota no parte de cero; ya cuenta con una base dispuesta a participar, con alcance transnacional y experiencia previa en microbioma (75% han publicado en el área).</p>
 </div>
 <div class="conclusion-card">
@@ -3205,7 +3205,7 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
       },
       {
         key: "Tutoría histórica, filosófica y ética",
-        countries: ["NLD"]
+        countries: []
       }
     ];
 
@@ -3269,7 +3269,9 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
         });
       });
 
-      return centers;
+      return centers.filter(function (center) {
+        return center.countryCode !== "NLD";
+      });
     }
 
     function haversineKm(lat1, lon1, lat2, lon2) {
@@ -3490,12 +3492,33 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
 
     function optimizeGeoMap() {
       var chart = document.getElementById("htmlwidget-116bf566eaae00938cff");
-      if (!chart || !window.Plotly || !chart.layout) {
+      if (!chart || !window.Plotly || !chart.layout || !chart.data || !chart.data[0]) {
         window.setTimeout(optimizeGeoMap, 250);
         return;
       }
 
-      window.Plotly.relayout(chart, {
+      var trace = chart.data[0];
+      var keepIndexes = trace.text.map(function (entry, index) {
+        return /País:\s*Países Bajos/.test(String(entry || "")) ? null : index;
+      }).filter(function (index) {
+        return index !== null;
+      });
+
+      var nextTrace = Object.assign({}, trace, {
+        lat: keepIndexes.map(function (index) { return trace.lat[index]; }),
+        lon: keepIndexes.map(function (index) { return trace.lon[index]; }),
+        text: keepIndexes.map(function (index) { return trace.text[index]; }),
+        hovertemplate: Array.isArray(trace.hovertemplate) ? keepIndexes.map(function (index) {
+          return trace.hovertemplate[index];
+        }) : trace.hovertemplate,
+        marker: Object.assign({}, trace.marker || {}, {
+          size: trace.marker && Array.isArray(trace.marker.size) ? keepIndexes.map(function (index) {
+            return trace.marker.size[index];
+          }) : trace.marker && trace.marker.size
+        })
+      });
+
+      var nextLayout = Object.assign({}, chart.layout, {
         height: 520,
         margin: { b: 0, l: 0, t: 0, r: 0 },
         geo: Object.assign({}, chart.layout.geo || {}, {
@@ -3516,6 +3539,8 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
           }
         })
       });
+
+      window.Plotly.react(chart, [nextTrace], nextLayout, chart.config || {});
     }
 
     var regionByCode = {
@@ -3536,7 +3561,6 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
       USA: "Norteamérica",
       BEL: "Europa",
       IRL: "Europa",
-      NLD: "Europa"
     };
 
     var regionColors = {
@@ -3561,7 +3585,6 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
         {"code":"IRL","country":"Irlanda","need":1,"support":1},
         {"code":"MEX","country":"México","need":3,"support":1},
         {"code":"PRY","country":"Paraguay","need":1,"support":1},
-        {"code":"NLD","country":"Países Bajos","need":1,"support":0},
         {"code":"PER","country":"Perú","need":1,"support":0},
         {"code":"PRI","country":"Puerto Rico","need":1,"support":1},
         {"code":"URY","country":"Uruguay","need":2,"support":1},
@@ -3581,7 +3604,6 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
         {"code":"IRL","country":"Irlanda","need":1,"support":1},
         {"code":"MEX","country":"México","need":3,"support":2},
         {"code":"PRY","country":"Paraguay","need":1,"support":1},
-        {"code":"NLD","country":"Países Bajos","need":1,"support":0},
         {"code":"PER","country":"Perú","need":1,"support":0},
         {"code":"PRI","country":"Puerto Rico","need":1,"support":1},
         {"code":"URY","country":"Uruguay","need":2,"support":1},
@@ -3601,7 +3623,6 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
         {"code":"IRL","country":"Irlanda","need":1,"support":0},
         {"code":"MEX","country":"México","need":3,"support":1},
         {"code":"PRY","country":"Paraguay","need":1,"support":1},
-        {"code":"NLD","country":"Países Bajos","need":1,"support":0},
         {"code":"PER","country":"Perú","need":1,"support":1},
         {"code":"PRI","country":"Puerto Rico","need":1,"support":1},
         {"code":"URY","country":"Uruguay","need":2,"support":1},
@@ -3621,7 +3642,6 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
         {"code":"IRL","country":"Irlanda","need":1,"support":0},
         {"code":"MEX","country":"México","need":3,"support":0},
         {"code":"PRY","country":"Paraguay","need":1,"support":0},
-        {"code":"NLD","country":"Países Bajos","need":1,"support":1},
         {"code":"PER","country":"Perú","need":1,"support":0},
         {"code":"PRI","country":"Puerto Rico","need":1,"support":0},
         {"code":"URY","country":"Uruguay","need":2,"support":0},
