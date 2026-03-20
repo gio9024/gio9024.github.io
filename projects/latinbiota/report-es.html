@@ -2023,6 +2023,7 @@ scroll-behavior: smooth;
 }
 body {
 margin: 0;
+padding: 0 clamp(20px, 4vw, 42px) 3rem;
 color: var(--ink);
 font-family: Georgia, 'Times New Roman', serif;
 background:
@@ -2500,6 +2501,10 @@ font-size: 3rem;
 .hero-content {
 padding: 2.2rem 1.5rem;
 }
+body {
+padding-left: 20px;
+padding-right: 20px;
+}
 .main-container {
 padding-left: 20px;
 padding-right: 20px;
@@ -2774,6 +2779,159 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
 
 <!-- code folding -->
 
+<script>
+  (function () {
+    var pieChartIds = [
+      "htmlwidget-573c2489eafe0b7f4c8b",
+      "htmlwidget-9396264e4c7b6575dd1b",
+      "htmlwidget-9ccaca270888df9ddbca"
+    ];
+
+    var barChartIds = [
+      "htmlwidget-7f63bce3cade3af370fd",
+      "htmlwidget-3bbe713633429564b4c3",
+      "htmlwidget-277ae4216cdc67243198",
+      "htmlwidget-5016fa6c6203c4cff134"
+    ];
+
+    function withPlotlyChart(id, callback, attempt) {
+      var chart = document.getElementById(id);
+      var tries = attempt || 0;
+
+      if (!chart || !window.Plotly || !chart.data || !chart.layout) {
+        if (tries < 40) {
+          window.setTimeout(function () {
+            withPlotlyChart(id, callback, tries + 1);
+          }, 250);
+        }
+        return;
+      }
+
+      callback(chart);
+    }
+
+    function sortHorizontalBar(chart) {
+      var trace = chart.data && chart.data[0];
+      if (!trace || trace.type !== "bar" || trace.orientation !== "h") {
+        return;
+      }
+
+      var rows = trace.y.map(function (label, index) {
+        return {
+          x: trace.x[index],
+          y: label,
+          customdata: Array.isArray(trace.customdata) ? trace.customdata[index] : trace.customdata,
+          hovertemplate: Array.isArray(trace.hovertemplate) ? trace.hovertemplate[index] : trace.hovertemplate,
+          text: Array.isArray(trace.text) ? trace.text[index] : trace.text
+        };
+      });
+
+      rows.sort(function (a, b) {
+        return b.x - a.x;
+      });
+
+      var nextTrace = Object.assign({}, trace, {
+        x: rows.map(function (row) { return row.x; }),
+        y: rows.map(function (row) { return row.y; }),
+        customdata: rows.map(function (row) { return row.customdata; }),
+        hovertemplate: rows.map(function (row) { return row.hovertemplate; }),
+        text: trace.text ? rows.map(function (row) { return row.text; }) : trace.text
+      });
+
+      var nextLayout = Object.assign({}, chart.layout, {
+        yaxis: Object.assign({}, chart.layout.yaxis || {}, {
+          categoryorder: "array",
+          categoryarray: rows.map(function (row) { return row.y; }),
+          autorange: "reversed"
+        })
+      });
+
+      window.Plotly.react(chart, [nextTrace], nextLayout, chart.config || {});
+    }
+
+    function convertPieToBar(id) {
+      withPlotlyChart(id, function (chart) {
+        var trace = chart.data && chart.data[0];
+        if (!trace || trace.type !== "pie") {
+          sortHorizontalBar(chart);
+          return;
+        }
+
+        var total = (trace.values || []).reduce(function (sum, value) {
+          return sum + value;
+        }, 0);
+
+        var rows = trace.labels.map(function (label, index) {
+          return {
+            label: label,
+            value: trace.values[index],
+            color: trace.marker && trace.marker.colors ? trace.marker.colors[index] : "#0f6c78",
+            percent: total ? trace.values[index] / total : 0
+          };
+        });
+
+        rows.sort(function (a, b) {
+          return b.value - a.value;
+        });
+
+        var nextTrace = {
+          type: "bar",
+          orientation: "h",
+          x: rows.map(function (row) { return row.value; }),
+          y: rows.map(function (row) { return row.label; }),
+          marker: {
+            color: rows.map(function (row) { return row.color; }),
+            line: {
+              color: "rgba(255,255,255,0.85)",
+              width: 1.2
+            }
+          },
+          customdata: rows.map(function (row) { return row.percent; }),
+          hovertemplate: rows.map(function () {
+            return "<b>%{y}</b><br>%{x} encuestados (%{customdata:.1%})<extra></extra>";
+          }),
+          text: rows.map(function (row) { return String(row.value); }),
+          textposition: "outside",
+          cliponaxis: false,
+          showlegend: false
+        };
+
+        var nextLayout = Object.assign({}, chart.layout, {
+          height: 300,
+          margin: { b: 40, l: 130, t: 10, r: 30 },
+          paper_bgcolor: "rgba(0,0,0,0)",
+          plot_bgcolor: "rgba(0,0,0,0)",
+          xaxis: {
+            title: "Encuestados",
+            automargin: true,
+            gridcolor: "rgba(19,32,43,0.08)",
+            zeroline: false,
+            rangemode: "tozero"
+          },
+          yaxis: {
+            automargin: true,
+            title: "",
+            type: "category",
+            categoryorder: "array",
+            categoryarray: rows.map(function (row) { return row.label; }),
+            autorange: "reversed"
+          },
+          hovermode: "closest",
+          showlegend: false
+        });
+
+        window.Plotly.react(chart, [nextTrace], nextLayout, chart.config || {});
+      });
+    }
+
+    window.addEventListener("load", function () {
+      pieChartIds.forEach(convertPieToBar);
+      barChartIds.forEach(function (id) {
+        withPlotlyChart(id, sortHorizontalBar);
+      });
+    });
+  })();
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
