@@ -2560,10 +2560,10 @@ padding-right: 1.2rem;
 }
 .geo-layout {
 display: grid;
-grid-template-columns: minmax(250px, 0.44fr) minmax(0, 1.56fr);
-gap: 0.8rem;
+grid-template-columns: minmax(300px, 0.52fr) minmax(0, 1.48fr);
+gap: 1.3rem;
 align-items: stretch;
-width: min(100%, 1480px);
+width: min(100%, 1440px);
 margin: 0 auto 1.5rem;
 }
 .geo-layout .section-shell,
@@ -2575,10 +2575,10 @@ margin: 0;
 display: flex;
 flex-direction: column;
 justify-content: center;
-padding: 1.45rem 1.6rem;
+padding: 1.55rem 1.75rem;
 }
 .geo-layout .map-panel {
-padding: 0.35rem 0.45rem;
+padding: 0.55rem 0.7rem;
 }
 .profile-status-grid .panel {
 margin-bottom: 0;
@@ -2667,6 +2667,9 @@ padding-right: 1rem;
 }
 .geo-layout .section-shell {
 padding: 1.2rem;
+}
+.geo-layout .map-panel {
+padding: 0.45rem;
 }
 }
 </style>
@@ -3012,10 +3015,43 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
         return;
       }
 
+      function wrapBarLabel(label) {
+        var source = String(label || "")
+          .replace(/<br\s*\/?>/gi, "\n")
+          .replace(/\s*\/\s*/g, " / ")
+          .replace(/\s+/g, " ")
+          .trim();
+
+        var segments = source.split("\n");
+
+        return segments.map(function (segment) {
+          var words = segment.split(" ");
+          var lines = [];
+          var currentLine = "";
+
+          words.forEach(function (word) {
+            var candidate = currentLine ? currentLine + " " + word : word;
+            if (candidate.length > 28 && currentLine) {
+              lines.push(currentLine);
+              currentLine = word;
+            } else {
+              currentLine = candidate;
+            }
+          });
+
+          if (currentLine) {
+            lines.push(currentLine);
+          }
+
+          return lines.join("<br>");
+        }).join("<br>");
+      }
+
       var rows = trace.y.map(function (label, index) {
+        var wrappedLabel = wrapBarLabel(label);
         return {
           x: trace.x[index],
-          y: label,
+          y: wrappedLabel,
           customdata: Array.isArray(trace.customdata) ? trace.customdata[index] : trace.customdata,
           hovertemplate: Array.isArray(trace.hovertemplate) ? trace.hovertemplate[index] : trace.hovertemplate,
           text: Array.isArray(trace.text) ? trace.text[index] : trace.text
@@ -3027,13 +3063,16 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
       });
 
       var longestLabel = rows.reduce(function (maxValue, row) {
-        var plain = String(row.y)
-          .replace(/<br\s*\/?>/gi, " ")
-          .replace(/<[^>]+>/g, "");
-        return Math.max(maxValue, plain.length);
+        var longestLine = String(row.y)
+          .split(/<br\s*\/?>/i)
+          .reduce(function (innerMax, line) {
+            var plainLine = String(line).replace(/<[^>]+>/g, "").trim();
+            return Math.max(innerMax, plainLine.length);
+          }, 0);
+        return Math.max(maxValue, longestLine);
       }, 0);
 
-      var computedLeftMargin = Math.min(420, Math.max(150, longestLabel * 7));
+      var computedLeftMargin = Math.min(280, Math.max(112, longestLabel * 5.4));
 
       var nextTrace = Object.assign({}, trace, {
         x: rows.map(function (row) { return row.x; }),
@@ -3062,7 +3101,10 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
           categoryorder: "array",
           categoryarray: rows.map(function (row) { return row.y; }),
           autorange: "reversed",
-          automargin: true
+          automargin: true,
+          tickfont: Object.assign({}, (chart.layout.yaxis && chart.layout.yaxis.tickfont) || {}, {
+            size: 11
+          })
         })
       });
 
@@ -3519,20 +3561,20 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
       });
 
       var nextLayout = Object.assign({}, chart.layout, {
-        height: 520,
+        height: 500,
         margin: { b: 0, l: 0, t: 0, r: 0 },
         geo: Object.assign({}, chart.layout.geo || {}, {
           scope: "world",
           projection: {
             type: "natural earth",
-            scale: 1.56
+            scale: 1.24
           },
           center: {
-            lon: -68,
-            lat: -11
+            lon: -77,
+            lat: -12
           },
           lonaxis: {
-            range: [-118, 14]
+            range: [-122, -28]
           },
           lataxis: {
             range: [-58, 34]
