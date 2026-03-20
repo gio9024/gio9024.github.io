@@ -2818,7 +2818,7 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
 <div class="panel" style="margin-top: 1rem;">
 <h3 style="margin-top: 0; margin-bottom: 0.45rem;">Dónde aparece en la red el apoyo equivalente</h3>
 <p style="margin-top: 0; margin-bottom: 0.25rem; color: #5c6773;">Cada punto representa un país. El eje X muestra cuántos países de América Latina reportan poder ofrecer el apoyo correspondiente, mientras que el eje Y usa como proxy de necesidad el número total de encuestados en ese país.</p>
-<p class="support-balance-note">La línea diagonal marca equilibrio entre necesidad aproximada y capacidad de apoyo. El color distingue la región del país.</p>
+<p class="support-balance-note">La línea diagonal marca equilibrio entre necesidad aproximada y capacidad de apoyo. El color distingue la región del país, y una leve separación horizontal evita que los países superpuestos queden ocultos.</p>
 <div class="support-balance-grid">
 <div class="support-balance-card">
 <h3>Acceso a análisis bioinformático</h3>
@@ -3239,10 +3239,6 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
       {
         key: "Acceso a muestras",
         countries: ["ARG", "BOL", "BRA", "BEL", "CHL", "COL", "CUB", "ECU", "MEX", "PRY", "PER", "PRI", "URY", "VEN"]
-      },
-      {
-        key: "Tutoría histórica, filosófica y ética",
-        countries: []
       }
     ];
 
@@ -3702,8 +3698,33 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
         return row.region === "América Latina" && row.support > 0;
       }).length;
 
+      var groupedByNeed = {};
+
+      data.forEach(function (row) {
+        var key = String(row.need);
+        if (!groupedByNeed[key]) {
+          groupedByNeed[key] = [];
+        }
+        groupedByNeed[key].push(row);
+      });
+
+      var maxDisplayX = latinAmericaOfferCount;
+
+      Object.keys(groupedByNeed).forEach(function (key) {
+        var pointsAtNeed = groupedByNeed[key].sort(function (a, b) {
+          return String(a.country).localeCompare(String(b.country), "es");
+        });
+        var midpoint = (pointsAtNeed.length - 1) / 2;
+
+        pointsAtNeed.forEach(function (row, index) {
+          var offset = (index - midpoint) * 0.24;
+          row.displayX = latinAmericaOfferCount + offset;
+          maxDisplayX = Math.max(maxDisplayX, row.displayX);
+        });
+      });
+
       var maxAxis = data.reduce(function (maxValue, row) {
-        return Math.max(maxValue, row.need, latinAmericaOfferCount);
+        return Math.max(maxValue, row.need, maxDisplayX);
       }, 0) + 0.5;
 
       var traces = [
@@ -3735,10 +3756,10 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
           mode: "markers",
           name: region,
           showlegend: showLegend,
-          x: points.map(function () { return latinAmericaOfferCount; }),
+          x: points.map(function (row) { return row.displayX; }),
           y: points.map(function (row) { return row.need; }),
           text: points.map(function (row) { return row.country; }),
-          customdata: points.map(function (row) { return [row.region, row.code]; }),
+          customdata: points.map(function (row) { return [row.region, row.code, latinAmericaOfferCount, row.need]; }),
           marker: {
             size: 11,
             color: regionColors[region],
@@ -3747,7 +3768,7 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
               width: 1.2
             }
           },
-          hovertemplate: "<b>%{text}</b><br>Región: %{customdata[0]}<br>Países de América Latina con oferta: %{x}<br>Necesidad aproximada: %{y}<extra></extra>"
+          hovertemplate: "<b>%{text}</b><br>Región: %{customdata[0]}<br>Países de América Latina con oferta: %{customdata[2]}<br>Necesidad aproximada: %{customdata[3]}<extra></extra>"
         });
       });
 
