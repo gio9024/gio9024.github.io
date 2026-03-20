@@ -2560,10 +2560,10 @@ padding-right: 1.2rem;
 }
 .geo-layout {
 display: grid;
-grid-template-columns: minmax(300px, 0.52fr) minmax(0, 1.48fr);
-gap: 1.3rem;
+grid-template-columns: minmax(320px, 0.62fr) minmax(0, 1.38fr);
+gap: 0.9rem;
 align-items: stretch;
-width: min(100%, 1440px);
+width: min(100%, 1300px);
 margin: 0 auto 1.5rem;
 }
 .geo-layout .section-shell,
@@ -2575,10 +2575,10 @@ margin: 0;
 display: flex;
 flex-direction: column;
 justify-content: center;
-padding: 1.55rem 1.75rem;
+padding: 1.45rem 1.6rem;
 }
 .geo-layout .map-panel {
-padding: 0.55rem 0.7rem;
+padding: 0.3rem 0.4rem;
 }
 .profile-status-grid .panel {
 margin-bottom: 0;
@@ -3556,23 +3556,23 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
       });
 
       var nextLayout = Object.assign({}, chart.layout, {
-        height: 500,
+        height: 470,
         margin: { b: 0, l: 0, t: 0, r: 0 },
         geo: Object.assign({}, chart.layout.geo || {}, {
           scope: "world",
           projection: {
             type: "natural earth",
-            scale: 1.24
+            scale: 1.34
           },
           center: {
-            lon: -77,
-            lat: -12
+            lon: -76,
+            lat: -11
           },
           lonaxis: {
-            range: [-122, -28]
+            range: [-118, -34]
           },
           lataxis: {
-            range: [-58, 34]
+            range: [-57, 31]
           }
         })
       });
