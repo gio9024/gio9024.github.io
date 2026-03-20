@@ -2560,10 +2560,10 @@ padding-right: 1.2rem;
 }
 .geo-layout {
 display: grid;
-grid-template-columns: minmax(280px, 0.56fr) minmax(0, 1.44fr);
-gap: 1rem;
+grid-template-columns: minmax(250px, 0.44fr) minmax(0, 1.56fr);
+gap: 0.8rem;
 align-items: stretch;
-width: min(100%, 1440px);
+width: min(100%, 1480px);
 margin: 0 auto 1.5rem;
 }
 .geo-layout .section-shell,
@@ -2575,10 +2575,10 @@ margin: 0;
 display: flex;
 flex-direction: column;
 justify-content: center;
-padding: 1.55rem 1.8rem;
+padding: 1.45rem 1.6rem;
 }
 .geo-layout .map-panel {
-padding: 0.5rem 0.7rem;
+padding: 0.35rem 0.45rem;
 }
 .profile-status-grid .panel {
 margin-bottom: 0;
@@ -3501,18 +3501,18 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
         geo: Object.assign({}, chart.layout.geo || {}, {
           scope: "world",
           projection: {
-            type: "mercator",
-            scale: 2.25
+            type: "natural earth",
+            scale: 1.56
           },
           center: {
-            lon: -70,
-            lat: -12
+            lon: -68,
+            lat: -11
           },
           lonaxis: {
-            range: [-108, -30]
+            range: [-118, 14]
           },
           lataxis: {
-            range: [-57, 28]
+            range: [-58, 34]
           }
         })
       });
