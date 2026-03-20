@@ -2390,6 +2390,9 @@ display: grid;
 grid-template-columns: repeat(3, minmax(0, 1fr));
 gap: 1rem;
 }
+.profile-status-grid {
+align-items: start;
+}
 .conclusion-grid {
 display: grid;
 grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2549,18 +2552,18 @@ margin-bottom: 2.5rem;
 overflow: hidden;
 }
 .map-panel {
-width: min(100%, 1240px);
+width: min(100%, 1360px);
 margin-left: auto;
 margin-right: auto;
-padding-left: 2rem;
-padding-right: 2rem;
+padding-left: 1.2rem;
+padding-right: 1.2rem;
 }
 .geo-layout {
 display: grid;
-grid-template-columns: minmax(300px, 0.72fr) minmax(0, 1.28fr);
-gap: 1.4rem;
+grid-template-columns: minmax(280px, 0.56fr) minmax(0, 1.44fr);
+gap: 1rem;
 align-items: stretch;
-width: min(100%, 1380px);
+width: min(100%, 1440px);
 margin: 0 auto 1.5rem;
 }
 .geo-layout .section-shell,
@@ -2572,13 +2575,24 @@ margin: 0;
 display: flex;
 flex-direction: column;
 justify-content: center;
-padding: 1.8rem 2rem;
+padding: 1.55rem 1.8rem;
 }
 .geo-layout .map-panel {
-padding: 0.8rem 1rem;
+padding: 0.5rem 0.7rem;
 }
 .profile-status-grid .panel {
 margin-bottom: 0;
+min-height: 0;
+padding: 1rem 1rem 1rem;
+display: grid;
+align-content: start;
+gap: 0.35rem;
+}
+.profile-status-grid .panel h3 {
+line-height: 1.16;
+}
+.profile-status-grid .plotly {
+min-height: 0;
 }
 .quote-card {
 border-radius: 24px;
@@ -3080,6 +3094,15 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
           return b.value - a.value;
         });
 
+        var longestLabel = rows.reduce(function (maxValue, row) {
+          return Math.max(maxValue, String(row.label).length);
+        }, 0);
+
+        var chartHeight = Math.max(220, 130 + rows.length * 52);
+        var leftMargin = Math.min(190, Math.max(125, longestLabel * 7.2));
+
+        chart.style.height = chartHeight + "px";
+
         var nextTrace = {
           type: "bar",
           orientation: "h",
@@ -3100,8 +3123,8 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
         };
 
         var nextLayout = Object.assign({}, chart.layout, {
-          height: 240,
-          margin: { b: 42, l: 150, t: 10, r: 18 },
+          height: chartHeight,
+          margin: { b: 38, l: leftMargin, t: 6, r: 18 },
           paper_bgcolor: "rgba(0,0,0,0)",
           plot_bgcolor: "rgba(0,0,0,0)",
           font: { size: 12 },
@@ -3473,23 +3496,23 @@ dónde están las necesidades más fuertes y qué tipo de infraestructura region
       }
 
       window.Plotly.relayout(chart, {
-        height: 470,
+        height: 520,
         margin: { b: 0, l: 0, t: 0, r: 0 },
         geo: Object.assign({}, chart.layout.geo || {}, {
           scope: "world",
           projection: {
-            type: "natural earth",
-            scale: 1.7
+            type: "mercator",
+            scale: 2.25
           },
           center: {
-            lon: -72,
-            lat: -8
+            lon: -70,
+            lat: -12
           },
           lonaxis: {
-            range: [-122, -28]
+            range: [-108, -30]
           },
           lataxis: {
-            range: [-58, 38]
+            range: [-57, 28]
           }
         })
       });
