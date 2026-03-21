@@ -9,6 +9,8 @@ Static GitHub Pages site for a personal project portfolio.
 - `projects/index.html`: projects directory
 - `projects/latinbiota/index.html`: Spanish landing page for the Latinbiota project
 - `projects/latinbiota/report-es.html`: standalone interactive Latinbiota report
+- `projects/studies/index.html`: Spanish landing page for the Studies project
+- `projects/studies/report-es.html`: standalone interactive Studies report
 
 ## Local preview
 
